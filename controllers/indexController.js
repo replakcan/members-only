@@ -55,7 +55,7 @@ exports.usersLogoutGet = (req, res) => {
       return next(err)
     }
   })
-  res.redirect('/protected-route')
+  res.redirect('/')
 }
 
 exports.usersLoginSuccess = (req, res) => {
