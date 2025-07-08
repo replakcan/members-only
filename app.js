@@ -39,6 +39,7 @@ app.use((req, res, next) => {
   console.log(session)
   console.log(user)
 
+  res.locals.currentUser = user
   next()
 })
 
