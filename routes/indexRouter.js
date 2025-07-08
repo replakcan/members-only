@@ -1,72 +1,27 @@
 const { Router } = require('express')
-const passport = require('passport')
-const pool = require('../db/pool')
-const bcrypt = require('bcryptjs')
 const { isAuth, isMember } = require('./authMiddleware')
+const indexController = require('../controllers/indexController')
 
 const indexRouter = Router()
 
-indexRouter.get('/login', (req, res) => {
-  res.render('login-form')
-})
+indexRouter.get('/login', indexController.renderLoginForm)
 
-indexRouter.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/login-success',
-    failureRedirect: '/login-failure',
-  })
-)
+indexRouter.post('/login', indexController.usersLoginRedirect)
 
-indexRouter.get('/register', (req, res) => {
-  res.render('register-form')
-})
+indexRouter.get('/register', indexController.renderRegisterForm)
 
-indexRouter.post('/register', async (req, res) => {
-  const { first_name, last_name, email, password } = req.body
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10)
-    await pool.query('INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4)', [
-      first_name,
-      last_name,
-      email,
-      hashedPassword,
-    ])
+indexRouter.post('/register', indexController.usersCreatePost)
 
-    res.redirect('/login')
-  } catch (error) {
-    console.log(error)
-    return next(error)
-  }
-})
+indexRouter.get('/protected-route', isAuth, indexController.renderProtectedRoute)
 
-indexRouter.get('/protected-route', isAuth, (req, res) => {
-  res.send('You made it to the route.')
-})
+indexRouter.get('/member-route', isMember, indexController.renderMemberRoute)
 
-indexRouter.get('/member-route', isMember, (req, res) => {
-  res.send('You made it to the route.')
-})
+indexRouter.get('/logout', indexController.usersLogoutGet)
 
-indexRouter.get('/logout', (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err)
-    }
-  })
-  res.redirect('/protected-route')
-})
+indexRouter.get('/login-success', indexController.usersLoginSuccess)
 
-indexRouter.get('/login-success', (req, res) => {
-  res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>')
-})
+indexRouter.get('/login-failure', indexController.usersLoginFailure)
 
-indexRouter.get('/login-failure', (req, res) => {
-  res.send('You entered the wrong password.')
-})
-
-indexRouter.get('/', (req, res) => {
-  res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>')
-})
+indexRouter.get('/', indexController.renderHomePage)
 
 module.exports = indexRouter
