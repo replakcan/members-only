@@ -22,6 +22,10 @@ indexRouter.get('/login-success', indexController.usersLoginSuccess)
 
 indexRouter.get('/login-failure', indexController.usersLoginFailure)
 
+indexRouter.get('/get-membership', isAuth, indexController.usersGetMembership)
+
+indexRouter.post('/get-membership', isAuth, indexController.updateUserMembershipStatus)
+
 indexRouter.get('/', indexController.renderHomePage)
 
 module.exports = indexRouter

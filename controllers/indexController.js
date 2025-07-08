@@ -73,4 +73,29 @@ exports.usersLoginFailure = (req, res) => {
 
 exports.renderHomePage = (req, res) => {
   res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>')
+exports.usersGetMembership = (req, res) => {
+  const { user } = req
+
+  if (user.membership_status) {
+    res.send('you already have an active membership!')
+  } else {
+    res.render('get-membership')
+  }
+}
+
+exports.updateUserMembershipStatus = async (req, res) => {
+  const { user } = req
+  const { membership_passcode } = req.body
+
+  try {
+    if (membership_passcode == process.env.MEMBERSHIP_PASSCODE) {
+      await pool.query('UPDATE users SET membership_status=true WHERE id=$1', [user.id])
+
+      res.redirect('/')
+    } else {
+      res.redirect('/get-membership')
+    }
+  } catch (error) {
+    return next(error)
+  }
 }
