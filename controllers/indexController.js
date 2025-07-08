@@ -40,7 +40,6 @@ exports.usersCreatePost = [
 
       res.redirect('/login')
     } catch (error) {
-      console.log(error)
       return next(error)
     }
   },
