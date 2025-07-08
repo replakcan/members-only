@@ -71,8 +71,18 @@ exports.usersLoginFailure = (req, res) => {
   res.send('Wrong user credentials')
 }
 
-exports.renderHomePage = (req, res) => {
-  res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>')
+exports.renderHomePage = async (req, res, next) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM users AS u INNER JOIN messages AS m ON u.id=m.user_id')
+    console.log(rows)
+    const messages = rows
+
+    res.render('home', { messages })
+  } catch (error) {
+    next(error)
+  }
+}
+
 exports.usersGetMembership = (req, res) => {
   const { user } = req
 
