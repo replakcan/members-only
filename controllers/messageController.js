@@ -1,4 +1,4 @@
-const pool = require('../db/pool')
+const db = require('../db/queries')
 
 exports.renderMessageForm = (req, res) => {
   res.render('message-form')
@@ -9,7 +9,7 @@ exports.createMessagePost = async (req, res, next) => {
   const { title, text } = req.body
 
   try {
-    await pool.query('INSERT INTO messages (title, text, user_id) VALUES($1, $2, $3)', [title, text, user.id])
+    await db.createNewMessageByUserId(title, text, user.id)
 
     res.redirect('/')
   } catch (error) {

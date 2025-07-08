@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const pool = require('../db/pool')
 const passport = require('passport')
+const db = require('../db/queries')
 const { validateUser, validationResult } = require('../config/validator')
 
 exports.renderLoginForm = (req, res) => {
@@ -31,12 +32,8 @@ exports.usersCreatePost = [
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10)
-      await pool.query('INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4)', [
-        first_name,
-        last_name,
-        email,
-        hashedPassword,
-      ])
+
+      await db.insertUser(first_name, last_name, email, hashedPassword)
 
       res.redirect('/login')
     } catch (error) {
@@ -72,9 +69,7 @@ exports.usersLoginFailure = (req, res) => {
 
 exports.renderHomePage = async (req, res, next) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM users AS u INNER JOIN messages AS m ON u.id=m.user_id')
-    console.log(rows)
-    const messages = rows
+    const messages = await db.findAllMessagesWithUserInfos()
 
     res.render('home', { messages })
   } catch (error) {
@@ -98,7 +93,7 @@ exports.updateUserMembershipStatus = async (req, res) => {
 
   try {
     if (membership_passcode == process.env.MEMBERSHIP_PASSCODE) {
-      await pool.query('UPDATE users SET membership_status=true WHERE id=$1', [user.id])
+      await db.makeUserMember(user.id)
 
       res.redirect('/')
     } else {
