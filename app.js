@@ -4,6 +4,7 @@ const path = require('node:path')
 const session = require('express-session')
 const pool = require('./db/pool')
 const indexRouter = require('./routes/indexRouter')
+const messageRouter = require('./routes/messageRouter')
 const passport = require('passport')
 const pgSession = require('connect-pg-simple')(session)
 
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/', indexRouter)
+app.use('/messages', messageRouter)
 
 app.use((err, req, res, next) => {
   console.log(err)
