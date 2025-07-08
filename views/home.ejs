@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <link rel="stylesheet" href="/styles/home.css" />
+  </head>
+  <body>
+    <h1>All Messages</h1>
+
+    <div class="message-container">
+      <% messages.forEach((message) => { %>
+      <div class="message-card">
+        <% if (currentUser && currentUser.membership_status) { %>
+        <div class="message-user">
+          <strong>username: <%= message.first_name %> <%= message.last_name %></strong>
+        </div>
+        <p class="message-timestamp"><%= new Date(message.timestamp).toLocaleString() %></p>
+        <% } %>
+
+        <h2 class="message-title">title: <%= message.title %></h2>
+        <p class="message-text">text: <%= message.text %></p>
+      </div>
+      <% }) %>
+    </div>
+  </body>
+</html>
