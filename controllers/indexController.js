@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs')
-const pool = require('../db/pool')
 const passport = require('passport')
 const db = require('../db/queries')
 const { validateUser, validationResult } = require('../config/validator')
