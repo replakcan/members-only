@@ -64,7 +64,7 @@ exports.usersLogoutGet = (req, res) => {
 }
 
 exports.usersLoginSuccess = (req, res) => {
-  res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>')
+  res.send('<p>You successfully logged in. --> <a href="/">To view all messages</a></p>')
 }
 
 exports.usersLoginFailure = (req, res) => {
