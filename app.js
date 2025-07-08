@@ -43,8 +43,8 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/', indexRouter)
 app.use('/messages', messageRouter)
+app.use('/', indexRouter)
 
 app.use((err, req, res, next) => {
   console.log(err)
